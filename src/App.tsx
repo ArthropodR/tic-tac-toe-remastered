@@ -7,7 +7,6 @@ function App() {
   const [showWinningLine, setShowWinningLine] = useState(false);
 
   useEffect(() => {
-    // Simulate loading
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1500);
@@ -16,17 +15,16 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Show winning line after the page has fully loaded
+    // Show winning line 
     if (!isLoading) {
       const timer = setTimeout(() => {
         setShowWinningLine(true);
-      }, 800); // Delay to allow fade-in animation to complete
+      }, 800); 
 
       return () => clearTimeout(timer);
     }
   }, [isLoading]);
 
-  // Preview grid cells
   const previewCells = ['x', 'o', null, null, 'x', null, 'o', null, 'x'];
 
   if (isLoading) {
