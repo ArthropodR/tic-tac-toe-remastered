@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Animation keyframes */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -17,25 +18,66 @@
   0% {
     width: 0;
     opacity: 0;
-    filter: blur(4px);
   }
-  10% {
-    opacity: 0.5;
-    filter: blur(3px);
-  }
-  30% {
+  20% {
     opacity: 1;
-    filter: blur(1px);
   }
   100% {
     width: 100%;
     opacity: 1;
-    filter: blur(0px);
   }
 }
 
+@keyframes drawDiagonalLine {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    width: 350px;
+    opacity: 1;
+  }
+}
+
+@keyframes pulseSlow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Animation classes */
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.animate-draw-line {
+  animation: drawLine 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: 0.3s;
+  will-change: width, opacity;
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
 }
 
 /* Custom scrollbar */
@@ -56,6 +98,15 @@
   background: #5e4d8b;
 }
 
+/* Base styles */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #121214;
+  overflow-x: hidden;
+}
+
 /* Ensure smooth transitions */
 * {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
@@ -69,15 +120,16 @@
   outline-offset: 2px;
 }
 
-/* Base styles */
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #121214;
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
-/* Subtle noise texture overlay */
+:focus-visible {
+  outline: 2px solid #9d8abf;
+  outline-offset: 2px;
+}
+
+/* Background elements */
 .noise-texture {
   position: fixed;
   top: 0;
@@ -90,14 +142,30 @@ body {
   opacity: 0.4;
 }
 
-/* Glow effect for elements */
-.glow {
-  box-shadow: 0 0 15px rgba(222, 165, 75, 0.15), 0 0 30px rgba(222, 165, 75, 0.05);
-}
-
-/* Warm gradient overlay */
 .warm-gradient-overlay {
   background: radial-gradient(circle at 70% 30%, rgba(97, 48, 71, 0.4) 0%, rgba(37, 30, 68, 0.2) 50%, rgba(20, 20, 31, 0) 100%);
+  pointer-events: none;
+}
+
+/* Game board and grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.5rem;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 18rem;
+  margin: 0 auto;
+}
+
+/* Shadow effects */
+.shadow-glow {
+  box-shadow: 0 0 15px rgba(222, 165, 75, 0.2), 0 0 30px rgba(222, 165, 75, 0.1);
+}
+
+.shadow-inner-glow {
+  box-shadow: inset 0 0 10px rgba(222, 165, 75, 0.1);
 }
 
 /* Winning line styles - completely overhauled for a different approach */
@@ -110,8 +178,13 @@ body {
   z-index: 20;
   opacity: 0;
   will-change: width, opacity, filter, box-shadow;
+  box-shadow: 
+    0 0 8px 1px rgba(255, 126, 95, 0.7),
+    0 0 16px 2px rgba(254, 180, 123, 0.5),
+    0 0 30px 4px rgba(255, 146, 43, 0.3);
 }
 
+/* Home page diagonal line */
 .diagonal-line {
   /* Position in absolute center of the board */
   top: 50%;
@@ -120,35 +193,196 @@ body {
   width: 350px;
   /* Use translate to center and rotate to align */
   transform: translate(-50%, -50%) rotate(45deg);
-  animation: drawLine 2s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  animation: drawDiagonalLine 2s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
   animation-delay: 0.1s;
-  box-shadow: 
-    0 0 8px 1px rgba(255, 126, 95, 0.7),
-    0 0 16px 2px rgba(254, 180, 123, 0.5),
-    0 0 30px 4px rgba(255, 146, 43, 0.3);
 }
 
-/* Shadow glow effect for hovering */
-.shadow-glow {
-  box-shadow: 
-    0 0 15px rgba(222, 165, 75, 0.3),
-    0 0 25px rgba(222, 165, 75, 0.1);
+/* Game page winning lines - horizontal */
+.horizontal-line-top {
+  top: 16.67%;
+  left: 50%;
+  width: 0;
+  transform: translate(-50%, -50%);
 }
 
-/* Slow pulse animation for the theme indicator */
-@keyframes pulseSlow {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-    filter: drop-shadow(0 0 8px rgba(222, 165, 75, 0.3));
+.horizontal-line-middle {
+  top: 50%;
+  left: 50%;
+  width: 0;
+  transform: translate(-50%, -50%);
+}
+
+.horizontal-line-bottom {
+  top: 83.33%;
+  left: 50%;
+  width: 0;
+  transform: translate(-50%, -50%);
+}
+
+/* Game page winning lines - vertical */
+.vertical-line-left {
+  top: 50%;
+  left: 16.67%;
+  width: 0;
+  height: 100%;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.vertical-line-middle {
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 100%;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.vertical-line-right {
+  top: 50%;
+  left: 83.33%;
+  width: 0;
+  height: 100%;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* Game page winning lines - diagonal */
+.diagonal-line-main {
+  top: 50%;
+  left: 50%;
+  width: 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.diagonal-line-counter {
+  top: 50%;
+  left: 50%;
+  width: 0;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Button styles */
+.btn {
+  @apply relative inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-full overflow-hidden shadow-lg transition-all duration-300 focus:outline-none;
+}
+
+.btn-primary {
+  @apply text-charcoal-950 bg-gradient-to-r from-amber-500 to-copper-500 hover:shadow-glow hover:scale-105 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-charcoal-900;
+}
+
+.btn-secondary {
+  @apply border border-midnight-600 text-midnight-100 hover:bg-midnight-800 hover:text-midnight-50 focus:ring-2 focus:ring-midnight-500 focus:ring-offset-2 focus:ring-offset-charcoal-900;
+}
+
+.btn-hover-effect {
+  @apply absolute inset-0 w-full h-full bg-gradient-to-r from-amber-400 to-copper-400 opacity-0 group-hover:opacity-100 transition-opacity;
+}
+
+/* Game cell styles */
+.game-cell {
+  @apply bg-charcoal-800 rounded-lg shadow-md flex items-center justify-center transition-all duration-300;
+  aspect-ratio: 1 / 1;
+}
+
+.game-cell:hover:not(.filled) {
+  @apply bg-midnight-800 scale-105 shadow-glow;
+}
+
+.game-cell.winning {
+  @apply bg-midnight-800 relative z-10;
+}
+
+.game-cell-preview {
+  @apply opacity-30;
+}
+
+/* Grid lines */
+.grid-lines {
+  @apply absolute inset-0 pointer-events-none;
+}
+
+.grid-line-vertical {
+  @apply absolute top-0 bottom-0 w-0.5 bg-midnight-700;
+}
+
+.grid-line-horizontal {
+  @apply absolute left-0 right-0 h-0.5 bg-midnight-700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .game-controls {
+    flex-direction: column;
+    gap: 0.75rem;
   }
-  50% {
-    opacity: 0.7;
-    transform: scale(0.97);
-    filter: drop-shadow(0 0 4px rgba(222, 165, 75, 0.1));
+  
+  .btn {
+    width: 100%;
   }
 }
 
-.animate-pulse-slow {
-  animation: pulseSlow 3s ease-in-out infinite;
+@media (min-width: 641px) and (max-width: 768px) {
+  .game-board {
+    max-width: 16rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .game-board {
+    max-width: 18rem;
+  }
+  
+  .game-cell:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Ensure proper spacing in game layout */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.game-header {
+  margin-bottom: 1.5rem;
+}
+
+.game-status {
+  margin-bottom: 2rem;
+}
+
+.game-board {
+  margin: 2.5rem auto;
+  position: relative;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+/* Accessibility improvements */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Performance optimizations */
+.optimize-gpu {
+  will-change: transform;
+  transform: translateZ(0);
 }
