@@ -15,8 +15,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Show winning line 
+    // Show winning line after loading is complete
     if (!isLoading) {
+      // Delay showing the winning line to ensure it's not visible before animation
       const timer = setTimeout(() => {
         setShowWinningLine(true);
       }, 800); 
@@ -58,7 +59,7 @@ function App() {
 
           {/* Tagline */}
           <p className="text-midnight-100 text-lg sm:text-xl">
-            The classic game of X's and O's, reimagined for cozy evenings
+            The classic game of X's and O's, reimagined.
           </p>
 
           {/* Game Preview */}
@@ -105,9 +106,9 @@ function App() {
               <div className="absolute bottom-1/3 left-0 right-0 h-0.5 bg-midnight-700"></div>
             </div>
 
-            {/* Winning diagonal line - adjusted positioning */}
+            {/* Winning diagonal line - Only shown when ready to animate */}
             {showWinningLine && (
-              <div className="winning-line diagonal-line animate-draw-line"></div>
+              <div className="winning-line diagonal-line"></div>
             )}
           </div>
 
@@ -125,7 +126,7 @@ function App() {
 
           {/* Footer */}
           <p className="text-midnight-300 text-sm mt-8">
-            © 2025 Tic-Tac-Toe Remastered. All rights reserved.
+            © 2025 Tic-Tac-Toe Reimagined. All rights reserved.
           </p>
         </div>
       </div>
